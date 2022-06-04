@@ -4,6 +4,10 @@ const underscore = require('underscore')
 const lodash = require('lodash')
 const router = express.Router();
 const moviesController1 = require("../controller/moviescontroller")
+const player =require('../controller/players')
+
+
+router.post("/players" , player.players1)
 
 router.get("/getmovies", moviesController1.getmovies)
 router.get("/movies/:indexNumber", moviesController1.getmoviesIndex)

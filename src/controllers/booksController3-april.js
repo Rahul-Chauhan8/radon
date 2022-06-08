@@ -1,5 +1,4 @@
-const bookAssignmentModel = require("../models/booksModelAssignment")
- 
+const bookAssignmentModel = require("../models/booksModel3-april")
 const createAssignmentBook = async function (req,res){
    let assignmentData = req.body 
 
@@ -18,7 +17,7 @@ const getBooksInYear = async function (req,res){
 
    let year = req.body.year
 
-    let publishyear = await bookAssignmentModel.find({ year:year })
+    let publishyear = await bookAssignmentModel.find({ year })
    
        res.send({msg: publishyear}) }
 
@@ -36,7 +35,9 @@ let alldata = req.body
    const getXINRBooks = async function (req,res){
    let mydata = req.body
     let getinrdata = await bookAssignmentModel.find({
-   $or:[{ indianprice :{$eq:500}},{indianprice:{$eq:3000}}, {indianprice:{$eq:110}}]
+   // $or:[{ indianprice :{$eq:500}},{indianprice:{$eq:3000}}, {indianprice:{$eq:110}}]
+   indianprice:$or[{$eq:500},{$eq:3000},{$eq:110}]
+
     })
    
        res.send({msg:getinrdata})

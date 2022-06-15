@@ -11,6 +11,8 @@ const createUser = async function (abcd, xyz) {
   xyz.send({ msg: savedData });
 };
 
+// here we login the user //
+
 const loginUser = async function (req, res) {
   let userName = req.body.emailId;
   let password = req.body.password;
@@ -42,21 +44,6 @@ const loginUser = async function (req, res) {
 
 const getUserData = async function (req, res) {
   let token = req.headers["x-Auth-token"];
-  if (!token) token = req.headers["x-auth-token"];
-
-  //If no token is present in the request header return error
-  if (!token) return res.send({ status: false, msg: "token must be present" });
-
-  console.log(token);
-  
-  // If a token is present then decode the token with verify function
-  // verify takes two inputs:
-  // Input 1 is the token to be decoded
-  // Input 2 is the same secret with which the token was generated
-  // Check the value of the decoded token yourself
-  let decodedToken = jwt.verify(token, "functionup-radon");
-  if (!decodedToken)
-    return res.send({ status: false, msg: "token is invalid" });
 
   let userId = req.params.userId;
   let userDetails = await userModel.findById(userId);
@@ -67,10 +54,8 @@ const getUserData = async function (req, res) {
 };
 
 const updateUser = async function (req, res) {
-// Do the same steps here:
-// Check if the token is present
-// Check if the token present is a valid token
-// Return a different error message in both these cases
+
+
 
   let userId = req.params.userId;
   let user = await userModel.findById(userId);
@@ -80,10 +65,45 @@ const updateUser = async function (req, res) {
   }
 
   let userData = req.body;
-  let updatedUser = await userModel.findOneAndUpdate({ _id: userId }, userData);
-  res.send({ status: updatedUser, data: updatedUser });
+  let updatedUser = await userModel.findOneAndUpdate({ _id: userId }, userData,{new:true});
+  res.send({ status:true, data: updatedUser});
 };
 
+
+const deletUser = async function (req, res) {
+  
+  // let token = req.headers["x-auth-token"];
+  // if(!token){
+  //   res.send({msg:"token is not present"})
+  // }
+  // let decodedToken = jwt.verify(token, "functionup-radon");
+  
+  // let a =decodedToken.userId
+  
+  // let b =req.params.userId
+  // if(a!=b){
+  //   res.send({msg:"token is not valid"})
+  // }
+  
+  
+    let userId = req.params.userId;
+    let user = await userModel.findById(userId);
+    //Return an error if no user with the given id exists in the db
+    if (!user) {
+      return res.send("No such user exists");
+    }
+    // these lines we written because if isdeleted already true then it respond already true //
+  if(user.isDeleted=="true"){
+    res.send({msg:"already deleted"})
+  }
+//  here we update the isdeleted true //
+    let updatedUser = await userModel.findOneAndUpdate({ _id: userId },{isDeleted:true},{new:true});
+
+    res.send({ status:true, data:"deleted"});
+  };
+ 
+  
+module.exports.deletUser =deletUser
 module.exports.createUser = createUser;
 module.exports.getUserData = getUserData;
 module.exports.updateUser = updateUser;

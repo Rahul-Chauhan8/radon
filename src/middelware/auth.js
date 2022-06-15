@@ -19,8 +19,10 @@ const mid1 = function (req,res,next){
 next();
 }
 
-const mid2 = async function(req,res,next){
+//this middeleware is used for user authorisation //
 
+const mid2 = async function(req,res,next){
+  let token = req.headers["x-auth-token"];
 let userId = req.params.userId;
 let decodedToken = jwt.verify(token, "functionup-radon")
 let loggeduser = decodedToken.userId
@@ -28,10 +30,10 @@ let loggeduser = decodedToken.userId
 if(userId!=loggeduser){
   res.send({msg:"not logged user"})
 }
-
+next()
 }
 
 
 module.exports.mid1 = mid1
 
-// module.exports.mid2 = mid2
+module.exports.mid2 = mid2

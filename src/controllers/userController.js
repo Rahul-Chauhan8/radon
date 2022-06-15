@@ -2,9 +2,7 @@ const jwt = require("jsonwebtoken");
 const userModel = require("../models/userModel");
 
 const createUser = async function (abcd, xyz) {
-  //You can name the req, res objects anything.
-  //but the first parameter is always the request 
-  //the second parameter is always the response
+
   let data = abcd.body;
   let savedData = await userModel.create(data);
   console.log(abcd.newAtribute);
@@ -17,6 +15,8 @@ const loginUser = async function (req, res) {
   let userName = req.body.emailId;
   let password = req.body.password;
 
+// this is used for user authentication //
+
   let user = await userModel.findOne({ emailId: userName, password: password });
   if (!user)
     return res.send({
@@ -24,12 +24,7 @@ const loginUser = async function (req, res) {
       msg: "username or the password is not corerct",
     });
 
-  // Once the login is successful, create the jwt token with sign function
-  // Sign function has 2 inputs:
-  // Input 1 is the payload or the object containing data to be set in token
-  // The decision about what data to put in token depends on the business requirement
-  // Input 2 is the secret
-  // The same secret will be used to decode tokens
+
   let token = jwt.sign(
     {
       userId: user._id.toString(),
@@ -72,18 +67,7 @@ const updateUser = async function (req, res) {
 
 const deletUser = async function (req, res) {
   
-  // let token = req.headers["x-auth-token"];
-  // if(!token){
-  //   res.send({msg:"token is not present"})
-  // }
-  // let decodedToken = jwt.verify(token, "functionup-radon");
-  
-  // let a =decodedToken.userId
-  
-  // let b =req.params.userId
-  // if(a!=b){
-  //   res.send({msg:"token is not valid"})
-  // }
+
   
   
     let userId = req.params.userId;
@@ -101,6 +85,20 @@ const deletUser = async function (req, res) {
 
     res.send({ status:true, data:"deleted"});
   };
+const postmessage = async function(req,res){
+
+let userid = req.params.userId
+let user2 = await userModel.findById({_id:userid})
+if(!user2){
+  res.send({msg:"no such user find"})
+}
+let message = req.body.message
+let userpost = user2.posts
+userpost.push(message)
+let updatedUser = await userModel.findOneAndUpdate({_id:userid},{posts:message},{new:true})
+res.send({data:updatedUser})
+}
+
  
   
 module.exports.deletUser =deletUser
@@ -108,3 +106,4 @@ module.exports.createUser = createUser;
 module.exports.getUserData = getUserData;
 module.exports.updateUser = updateUser;
 module.exports.loginUser = loginUser;
+module.exports.postmessage = postmessage

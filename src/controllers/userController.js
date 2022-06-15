@@ -1,6 +1,9 @@
 const jwt = require("jsonwebtoken");
 const userModel = require("../models/userModel");
 
+
+
+
 const createUser = async function (abcd, xyz) {
 
   let data = abcd.body;
@@ -8,6 +11,12 @@ const createUser = async function (abcd, xyz) {
   console.log(abcd.newAtribute);
   xyz.send({ msg: savedData });
 };
+
+
+
+
+
+
 
 // here we login the user //
 
@@ -37,6 +46,11 @@ const loginUser = async function (req, res) {
   res.send({ status: true, token: token });
 };
 
+
+
+
+
+
 const getUserData = async function (req, res) {
   let token = req.headers["x-Auth-token"];
 
@@ -47,6 +61,10 @@ const getUserData = async function (req, res) {
 
   res.send({ status: true, data: userDetails });
 };
+
+
+
+
 
 const updateUser = async function (req, res) {
 
@@ -65,10 +83,9 @@ const updateUser = async function (req, res) {
 };
 
 
-const deletUser = async function (req, res) {
-  
 
-  
+
+const deletUser = async function (req, res) {
   
     let userId = req.params.userId;
     let user = await userModel.findById(userId);
@@ -79,12 +96,17 @@ const deletUser = async function (req, res) {
     // these lines we written because if isdeleted already true then it respond already true //
   if(user.isDeleted=="true"){
     res.send({msg:"already deleted"})
-  }
+  // }
 //  here we update the isdeleted true //
     let updatedUser = await userModel.findOneAndUpdate({ _id: userId },{isDeleted:true},{new:true});
 
     res.send({ status:true, data:"deleted"});
   };
+
+
+
+
+
 const postmessage = async function(req,res){
 
 let userid = req.params.userId
@@ -96,14 +118,8 @@ let message = req.body.message
 let userpost = user2.posts
 userpost.push(message)
 let updatedUser = await userModel.findOneAndUpdate({_id:userid},{posts:message},{new:true})
-res.send({data:updatedUser})
-}
+return res.send({data:updatedUser})
 
+}
  
-  
-module.exports.deletUser =deletUser
-module.exports.createUser = createUser;
-module.exports.getUserData = getUserData;
-module.exports.updateUser = updateUser;
-module.exports.loginUser = loginUser;
-module.exports.postmessage = postmessage
+

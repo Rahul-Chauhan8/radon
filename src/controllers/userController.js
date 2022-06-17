@@ -66,6 +66,7 @@ try {
 
 
   let userId = req.params.userId;
+  if(req.userId!=userId) {return res.send({msg:"not authorised"})}
   let user = await userModel.findById(userId);
   //Return an error if no user with the given id exists in the db
   if (!user) {

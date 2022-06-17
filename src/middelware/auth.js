@@ -13,10 +13,15 @@ try {
     
     let decodedToken = jwt.verify(token, "functionup-radon");
     if (!decodedToken)
+
       return res.status(400).send({ status: false, msg: "token is invalid" });
+      else {
+        req.userId=decodedToken.userId
+        next();
+      }
     
 
-next();
+
 }
 catch (error){
   res.status(500).send(error.message)
